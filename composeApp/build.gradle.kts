@@ -8,7 +8,10 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
 
-//    alias(libs.plugins.jetbrains.kotlin.serialization)
+//    kotlin("jvm") version "2.3.20" // or kotlin("multiplatform") or any other kotlin plugin
+    kotlin("plugin.serialization") version "2.3.20"
+
+//    alias(libs.plugins.kotlinSerialization) apply false
 }
 
 kotlin {
@@ -44,6 +47,8 @@ kotlin {
             implementation(libs.material3.adaptive.navigation.suite)
             implementation(libs.material3.window.size.class1)
 
+
+            implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
