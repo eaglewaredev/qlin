@@ -39,7 +39,10 @@ kotlin {
             implementation(libs.jetbrains.material3.adaptiveNavigation3)
             implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
 
-            implementation(compose.materialIconsExtended)
+            implementation(libs.material.icons.extended) // Optional: only required if Material icon vectors are used
+            implementation(libs.material3.adaptive)
+            implementation(libs.material3.adaptive.navigation.suite)
+            implementation(libs.material3.window.size.class1)
 
         }
         commonTest.dependencies {
