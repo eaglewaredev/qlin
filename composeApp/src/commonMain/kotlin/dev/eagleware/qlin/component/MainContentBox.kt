@@ -20,10 +20,11 @@ import androidx.compose.ui.Modifier
 fun MainContentBox(
     navigationSuiteState: NavigationSuiteScaffoldState,
     layoutType: NavigationSuiteType,
+    modifier: Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .consumeWindowInsets(
                 if (

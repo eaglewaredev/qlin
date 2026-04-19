@@ -264,4 +264,5 @@ fun App() {
 
 val mainAppScreens = listOf(
     NavItem.HOME.route,
+    NavItem.INVENTORY.route,
 )

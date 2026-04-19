@@ -3,10 +3,12 @@ package dev.eagleware.qlin
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material.icons.filled.Subscriptions
 import androidx.compose.material.icons.filled.VideoLibrary
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Sell
 import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material.icons.outlined.VideoLibrary
 import androidx.compose.material3.Icon
@@ -23,7 +25,8 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import dev.eagleware.qlin.component.DashboardScreen
+import dev.eagleware.qlin.view.DashboardScreen
+import dev.eagleware.qlin.view.InventoryScreen
 import kotlinx.serialization.Serializable
 
 fun customNavigationSuiteType(
@@ -113,11 +116,11 @@ enum class NavItem(
         unselectedIcon = Icons.Outlined.Home,
         label = "Home"
     ),
-    SHORTS(
-        route = HomeEntry,
-        selectedIcon = Icons.Filled.PlayArrow,
-        unselectedIcon = Icons.Outlined.PlayArrow,
-        label = "Sell"
+    INVENTORY(
+        route = InventoryEntry,
+        selectedIcon = Icons.Filled.Sell,
+        unselectedIcon = Icons.Outlined.Sell,
+        label = "Price"
     ),
     SUBSCRIPTIONS(
         route = HomeEntry,
@@ -138,6 +141,9 @@ sealed interface QRoute: NavKey
 
 @Serializable
 data object HomeEntry: QRoute
+
+@Serializable
+data object InventoryEntry: QRoute
 @Composable
 fun Navigations(
     backStack: NavBackStack<NavKey>,
@@ -150,6 +156,11 @@ fun Navigations(
             entry<HomeEntry> {
                 DashboardScreen(
                     modifier = modifier
+                )
+            }
+            entry<InventoryEntry> {
+                InventoryScreen(
+                    modifier = modifier,
                 )
             }
         }
