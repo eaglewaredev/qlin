@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuOpen
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import dev.eagleware.qlin.HomeEntry
 import dev.eagleware.qlin.NavItem
 import kotlinx.coroutines.launch
 
@@ -221,6 +224,17 @@ fun QNavigationSuiteScaffoldLayout(
         ) {
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
+                floatingActionButton = {
+                    if(backStack.lastOrNull() == HomeEntry) {
+                        FloatingActionButton(
+                            onClick = {
+                                println("Floating action button")
+                            }
+                        ){
+                            Icon(Icons.Filled.Add, contentDescription = "Add")
+                        }
+                    }
+                }
             ) { innerPadding ->
                 MainContentBox(
                     navigationSuiteState = navigationSuiteState,
