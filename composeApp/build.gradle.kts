@@ -11,7 +11,7 @@ plugins {
 //    kotlin("jvm") version "2.3.20" // or kotlin("multiplatform") or any other kotlin plugin
     kotlin("plugin.serialization") version "2.3.20"
 
-//    alias(libs.plugins.kotlinSerialization) apply false
+    id("app.cash.sqldelight") version "2.4.0-SNAPSHOT"
 }
 
 kotlin {
@@ -27,6 +27,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.sqldelight.android)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -47,8 +48,9 @@ kotlin {
             implementation(libs.material3.adaptive.navigation.suite)
             implementation(libs.material3.window.size.class1)
 
-
             implementation(libs.kotlinx.serialization.json)
+
+            implementation(libs.sqldelight.coroutine)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -56,6 +58,8 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+
+            implementation(libs.sqldelight.jvm)
         }
     }
 }
@@ -99,6 +103,14 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "dev.eagleware.qlin"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        register("Qlin") {
+            packageName.set("dev.eagleware")
         }
     }
 }
