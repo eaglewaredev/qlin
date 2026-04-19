@@ -27,9 +27,15 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.rememberWideNavigationRailState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import dev.eagleware.qlin.NavItem
 import kotlinx.coroutines.launch
 
@@ -37,8 +43,7 @@ import kotlinx.coroutines.launch
 fun QNavigationSuiteScaffoldLayout(
     navigationSuiteState: NavigationSuiteScaffoldState,
     layoutType: NavigationSuiteType,
-    currentNavigationItem: NavItem?,
-    onNavigationItemClick: (NavItem) -> Unit,
+    backStack: NavBackStack<NavKey>,
     colors: NavigationSuiteColors = NavigationSuiteDefaults.colors(),
     content: @Composable BoxScope.() -> Unit,
 ){
@@ -54,6 +59,10 @@ fun QNavigationSuiteScaffoldLayout(
 
             else -> Unit
         }
+    }
+
+    var currentDestination by rememberSaveable {
+        mutableStateOf(NavItem.HOME)
     }
 
     NavigationSuiteScaffoldLayout(
@@ -73,13 +82,13 @@ fun QNavigationSuiteScaffoldLayout(
                                     iconPosition = if (layoutType == NavigationSuiteType.ShortNavigationBarCompact) NavigationItemIconPosition.Top else NavigationItemIconPosition.Start,
                                     icon = {
                                         Icon(
-                                            imageVector = if (currentNavigationItem == item) item.selectedIcon else item.unselectedIcon,
+                                            imageVector = if (currentDestination == item) item.selectedIcon else item.unselectedIcon,
                                             contentDescription = null,
                                         )
                                     },
                                     label = { Text(item.label) },
-                                    selected = currentNavigationItem == item,
-                                    onClick = { onNavigationItemClick(item) },
+                                    selected = currentDestination == item,
+                                    onClick = { backStack.add(item.route) },
                                 )
                             }
                         },
@@ -123,13 +132,13 @@ fun QNavigationSuiteScaffoldLayout(
                                     },
                                     icon = {
                                         Icon(
-                                            imageVector = if (currentNavigationItem == item) item.selectedIcon else item.unselectedIcon,
+                                            imageVector = if (currentDestination == item) item.selectedIcon else item.unselectedIcon,
                                             contentDescription = null,
                                         )
                                     },
                                     label = { Text(item.label) },
-                                    selected = currentNavigationItem == item,
-                                    onClick = { onNavigationItemClick(item) },
+                                    selected = currentDestination == item,
+                                    onClick = { backStack.add(item.route) },
                                     railExpanded = wideNavigationRailState.targetValue == WideNavigationRailValue.Expanded,
                                 )
                             }
@@ -149,13 +158,13 @@ fun QNavigationSuiteScaffoldLayout(
                             NavigationRailItem(
                                 icon = {
                                     Icon(
-                                        imageVector = if (currentNavigationItem == item) item.selectedIcon else item.unselectedIcon,
+                                        imageVector = if (currentDestination == item) item.selectedIcon else item.unselectedIcon,
                                         contentDescription = null,
                                     )
                                 },
                                 label = { Text(item.label) },
-                                selected = currentNavigationItem == item,
-                                onClick = { onNavigationItemClick(item) },
+                                selected = currentDestination == item,
+                                onClick = { backStack.add(item.route) },
                             )
                         }
                         Spacer(Modifier.weight(1f))
@@ -173,13 +182,13 @@ fun QNavigationSuiteScaffoldLayout(
                                 modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp),
                                 icon = {
                                     Icon(
-                                        imageVector = if (currentNavigationItem == item) item.selectedIcon else item.unselectedIcon,
+                                        imageVector = if (currentDestination == item) item.selectedIcon else item.unselectedIcon,
                                         contentDescription = null,
                                     )
                                 },
                                 label = { Text(item.label) },
-                                selected = currentNavigationItem == item,
-                                onClick = { onNavigationItemClick(item) },
+                                selected = currentDestination == item,
+                                onClick = { backStack.add(item.route) },
                             )
                         }
                     }
@@ -187,12 +196,11 @@ fun QNavigationSuiteScaffoldLayout(
             }
         },
         layoutType = layoutType,
-        content = {
-            MainContentBox(
-                navigationSuiteState = navigationSuiteState,
-                layoutType = layoutType,
-                content = content
-            )
-        }
-    )
+    ){
+        MainContentBox(
+            navigationSuiteState = navigationSuiteState,
+            layoutType = layoutType,
+            content = content
+        )
+    }
 }

@@ -16,7 +16,14 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
+import dev.eagleware.qlin.component.DashboardScreen
 import kotlinx.serialization.Serializable
 
 fun customNavigationSuiteType(
@@ -77,7 +84,7 @@ fun customNavigationSuiteType(
 sealed interface Route {
 
     @kotlinx.serialization.Serializable
-    data object HomeRoute : Route
+    data object Home : Route
 
     @kotlinx.serialization.Serializable
     data object ShortsRoute : Route
@@ -95,34 +102,57 @@ sealed interface Route {
 }
 
 enum class NavItem(
-    val route: Route,
+    val route: NavKey,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     val label: String
 ) {
     HOME(
-        route = Route.HomeRoute,
+        route = HomeEntry,
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home,
         label = "Home"
     ),
     SHORTS(
-        route = Route.ShortsRoute,
+        route = HomeEntry,
         selectedIcon = Icons.Filled.PlayArrow,
         unselectedIcon = Icons.Outlined.PlayArrow,
-        label = "Shorts"
+        label = "Sell"
     ),
     SUBSCRIPTIONS(
-        route = Route.SubscriptionsRoute,
+        route = HomeEntry,
         selectedIcon = Icons.Filled.Subscriptions,
         unselectedIcon = Icons.Outlined.Subscriptions,
-        label = "Subscriptions"
+        label = "Settings"
     ),
     LIBRARY(
-        route = Route.LibraryRoute,
+        route = HomeEntry,
         selectedIcon = Icons.Filled.VideoLibrary,
         unselectedIcon = Icons.Outlined.VideoLibrary,
-        label = "Library"
+        label = "Profile"
+    )
+}
+
+@Serializable
+sealed interface QRoute: NavKey
+
+@Serializable
+data object HomeEntry: QRoute
+@Composable
+fun Navigations(
+    backStack: NavBackStack<NavKey>,
+    modifier: Modifier,
+){
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryProvider = entryProvider {
+            entry<HomeEntry> {
+                DashboardScreen(
+                    modifier = modifier
+                )
+            }
+        }
     )
 }
 

@@ -38,6 +38,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldState
 import androidx.compose.material3.adaptive.navigationsuite.rememberNavigationSuiteScaffoldState
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.*
@@ -46,8 +47,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.savedstate.serialization.SavedStateConfiguration
 import dev.eagleware.qlin.component.QNavigationSuiteScaffoldLayout
 import kotlinx.coroutines.launch
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import org.jetbrains.compose.resources.painterResource
 
 import qlin.composeapp.generated.resources.Res
@@ -209,29 +216,52 @@ fun App() {
 //            }
 //        }
 
-        val navController = rememberNavController()
+        val config = SavedStateConfiguration {
+            serializersModule = SerializersModule {
+                polymorphic(NavKey::class) {
+//                    mutableStateListOf(QRoute)
+                    subclass(HomeEntry::class, HomeEntry.serializer())
+                }
+            }
+        }
+
+        val backStack = rememberNavBackStack(config, HomeEntry)
         val navigationSuiteState = rememberNavigationSuiteScaffoldState()
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
 
         val windowSizeClass = calculateWindowSizeClass()
         val customLayoutType = customNavigationSuiteType(windowSizeClass)
 
+        LaunchedEffect(backStack.lastOrNull()) {
+            if(backStack.lastOrNull() in mainAppScreens) {
+                navigationSuiteState.show()
+            }else{
+                navigationSuiteState.hide()
+            }
+        }
+
         QNavigationSuiteScaffoldLayout(
             navigationSuiteState = navigationSuiteState,
             layoutType = customLayoutType,
-            currentNavigationItem = currentNavigationItem,
-            onNavigationItemClick = { navItem ->
-                navController.navigate(navItem.route) {
-                    popUpTo(Route.HomeRoute) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            },
+            backStack = backStack,
+//            onNavigationItemClick = { navItem ->
+//                navController.navigate(navItem.route) {
+//                    popUpTo(Route.HomeRoute) {
+//                        saveState = true
+//                    }
+//                    launchSingleTop = true
+//                    restoreState = true
+//                }
+//            },
             content = {
-                AppNavHost(navController = navController)
+                Navigations(
+                    backStack = backStack,
+                    modifier = Modifier,
+                )
             }
         )
     }
 }
+
+val mainAppScreens = listOf(
+    NavItem.HOME.route,
+)
