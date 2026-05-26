@@ -18,7 +18,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-
             val barColor = MaterialTheme.colorScheme.background.toArgb()
 
             LaunchedEffect(isDark.value) {

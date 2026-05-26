@@ -44,6 +44,8 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import dev.eagleware.qlin.HomeEntry
 import dev.eagleware.qlin.NavItem
+import dev.eagleware.qlin.NewAccountEntry
+import dev.eagleware.qlin.SettingsEntry
 import kotlinx.coroutines.launch
 
 @Composable
@@ -224,6 +226,7 @@ fun QNavigationSuiteScaffoldLayout(
         ) {
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
+                topBar = {TopBarApps(backStack)},
                 floatingActionButton = {
                     if(backStack.lastOrNull() == HomeEntry) {
                         FloatingActionButton(
@@ -244,5 +247,14 @@ fun QNavigationSuiteScaffoldLayout(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun TopBarApps(backStack: NavBackStack<NavKey>){
+    when(backStack.lastOrNull()){
+        is SettingsEntry -> SettingsTopBar()
+        is NewAccountEntry -> NewAccountTopBar(backStack)
+        else -> Unit
     }
 }

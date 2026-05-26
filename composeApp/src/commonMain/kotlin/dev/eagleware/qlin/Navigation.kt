@@ -1,16 +1,19 @@
 package dev.eagleware.qlin
 
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Sell
-import androidx.compose.material.icons.filled.Subscriptions
-import androidx.compose.material.icons.filled.VideoLibrary
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Receipt
 import androidx.compose.material.icons.outlined.Sell
-import androidx.compose.material.icons.outlined.Subscriptions
-import androidx.compose.material.icons.outlined.VideoLibrary
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
@@ -27,6 +30,8 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import dev.eagleware.qlin.view.DashboardScreen
 import dev.eagleware.qlin.view.InventoryScreen
+import dev.eagleware.qlin.view.settings.NewAccountScreen
+import dev.eagleware.qlin.view.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
 fun customNavigationSuiteType(
@@ -116,22 +121,28 @@ enum class NavItem(
         unselectedIcon = Icons.Outlined.Home,
         label = "Home"
     ),
+    SALES(
+        route = InventoryEntry,
+        selectedIcon = Icons.Filled.Receipt,
+        unselectedIcon = Icons.Outlined.Receipt,
+        label = "Sale"
+    ),
     INVENTORY(
         route = InventoryEntry,
         selectedIcon = Icons.Filled.Sell,
         unselectedIcon = Icons.Outlined.Sell,
-        label = "Price"
+        label = "Inventory"
     ),
-    SUBSCRIPTIONS(
-        route = HomeEntry,
-        selectedIcon = Icons.Filled.Subscriptions,
-        unselectedIcon = Icons.Outlined.Subscriptions,
+    SETTINGS(
+        route = SettingsEntry,
+        selectedIcon = Icons.Filled.Settings,
+        unselectedIcon = Icons.Outlined.Settings,
         label = "Settings"
     ),
-    LIBRARY(
+    PROFILE(
         route = HomeEntry,
-        selectedIcon = Icons.Filled.VideoLibrary,
-        unselectedIcon = Icons.Outlined.VideoLibrary,
+        selectedIcon = Icons.Filled.AccountCircle,
+        unselectedIcon = Icons.Outlined.AccountCircle,
         label = "Profile"
     )
 }
@@ -144,6 +155,12 @@ data object HomeEntry: QRoute
 
 @Serializable
 data object InventoryEntry: QRoute
+
+@Serializable
+data object NewAccountEntry: QRoute
+
+@Serializable
+data object SettingsEntry: QRoute
 @Composable
 fun Navigations(
     backStack: NavBackStack<NavKey>,
@@ -163,7 +180,34 @@ fun Navigations(
                     modifier = modifier,
                 )
             }
-        }
+            entry<SettingsEntry>{
+                SettingsScreen(
+                    modifier = modifier,
+                    backStack = backStack,
+                )
+            }
+            entry<NewAccountEntry>{
+                NewAccountScreen(
+                    modifier = modifier,
+                    backStack = backStack,
+                )
+            }
+        },
+        transitionSpec = {
+            // Slide in from right when navigating forward
+            slideInHorizontally(initialOffsetX = { it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { -it })
+        },
+        popTransitionSpec = {
+            // Slide in from left when navigating back
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { it })
+        },
+        predictivePopTransitionSpec = {
+            // Slide in from left when navigating back
+            slideInHorizontally(initialOffsetX = { -it }) togetherWith
+                    slideOutHorizontally(targetOffsetX = { it })
+        },
     )
 }
 

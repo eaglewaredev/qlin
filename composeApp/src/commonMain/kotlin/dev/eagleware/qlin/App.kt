@@ -52,6 +52,8 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.savedstate.serialization.SavedStateConfiguration
 import dev.eagleware.qlin.component.QNavigationSuiteScaffoldLayout
+import dev.eagleware.qlin.component.theme.LocalTheme
+import dev.eagleware.qlin.component.theme.QlinTheme
 import kotlinx.coroutines.launch
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -64,185 +66,35 @@ import qlin.composeapp.generated.resources.compose_multiplatform
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 fun App() {
-    MaterialTheme {
-//        // Basic parameters
-//        val itemCount = listOf("Three", "Four", "Five")
-//        val alwaysShowLabel = remember { mutableStateOf(false)}
-//        val useDifferentIconsForStates by remember { mutableStateOf(false) }
-//
-//// NavigationBar parameters
-//        val contentColor =MaterialTheme.colorScheme.contentColorFor(NavigationBarDefaults.containerColor)
-//        val tonalElevation  = 3f
-//
-//// Item color parameters
-//        val useCustomItemColors by remember{mutableStateOf(false)}
-//        val selectedIconColor  = MaterialTheme.colorScheme.onSecondaryContainer
-//        val selectedTextColor  = MaterialTheme.colorScheme.onSecondaryContainer
-//        val indicatorColor  = MaterialTheme.colorScheme.secondaryContainer
-//        val unselectedIconColor  =MaterialTheme.colorScheme.onSurfaceVariant
-//        val unselectedTextColor  = MaterialTheme.colorScheme.onSurfaceVariant
-//
-//// State
-//        var selectedItem by remember { mutableIntStateOf(0) }
-//
-//        // Snackbar state
-//        val snackbarHostState = remember { SnackbarHostState() }
-//        val scope = rememberCoroutineScope()
-//        val showSnackbarHost = remember { mutableStateOf(false) }
-//
-//// Define items based on the selected count
-//        val items = when (itemCount) {
-//            listOf("Five") -> listOf("Home", "Messages", "Favorites", "Profile", "Settings")
-//            listOf("Four") -> listOf("Home", "Messages", "Favorites", "Profile")
-//            else -> listOf("Home", "Favorites", "Profile")
-//        }
-//
-//// Define selected icons
-//        val selectedIcons = listOf(
-//            Icons.Filled.Home,
-//            Icons.Filled.Email,
-//            Icons.Filled.Favorite,
-//            Icons.Filled.Person,
-//            Icons.Filled.Settings
-//        )
-//
-//// Define unselected icons (used only if useDifferentIconsForStates is true)
-//        val unselectedIcons = listOf(
-//            Icons.Outlined.Home,
-//            Icons.Outlined.Email,
-//            Icons.Outlined.Favorite,
-//            Icons.Outlined.Person,
-//            Icons.Outlined.Settings
-//        )
-//
-//        Scaffold(
-//            modifier = Modifier.fillMaxSize(),
-//
-//            bottomBar = {
-//                NavigationBar(
-//                    modifier = Modifier.fillMaxWidth()
-//                        .height(72.dp),
-//                    contentColor = contentColor,
-//                    tonalElevation = tonalElevation.dp,
-//                    windowInsets = NavigationBarDefaults.windowInsets,
-//
-//                    ) {
-//                    // Use RowScope to properly layout items
-//                    items.forEachIndexed { index, item ->
-//                        NavigationBarItem(
-//                            selected = selectedItem == index,
-//                            onClick = { selectedItem = index },
-//                            icon = {
-//                                Icon(
-//                                    imageVector = if (useDifferentIconsForStates) {
-//                                        if (selectedItem == index) selectedIcons[index] else unselectedIcons[index]
-//                                    } else {
-//                                        selectedIcons[index]
-//                                    },
-//                                    contentDescription = item
-//                                )
-//                            },
-//                            label = { Text(item) },
-//                            alwaysShowLabel = alwaysShowLabel.value,
-//                            colors = if (useCustomItemColors) {
-//                                NavigationBarItemDefaults.colors(
-//                                    selectedIconColor = selectedIconColor,
-//                                    selectedTextColor = selectedTextColor,
-//                                    indicatorColor = indicatorColor,
-//                                    unselectedIconColor = unselectedIconColor,
-//                                    unselectedTextColor = unselectedTextColor
-//                                )
-//                            } else {
-//                                NavigationBarItemDefaults.colors()
-//                            }
-//                        )
-//                    }
-//                }
-//            },
-//            snackbarHost = {
-//                if (showSnackbarHost.value) {
-//                    SnackbarHost(hostState = snackbarHostState)
-//                }
-//            },
-//            floatingActionButton = {
-//                FloatingActionButton(
-//                    onClick = {
-//                        scope.launch {
-//                            snackbarHostState.showSnackbar("FAB clicked")
-//                        }
-//                    }
-//                ) {
-//                    Icon(Icons.Filled.Add, contentDescription = "Add")
-//                }
-//            }
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .padding(it)
-//                    .fillMaxWidth()
-//            ) {
-//                // Content area (takes available space)
-//                Box(
-//                    modifier = Modifier
-//                        .weight(1f)
-//                        .fillMaxWidth(),
-//                    contentAlignment = Alignment.Center
-//                ) {
-//                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                        Icon(
-//                            imageVector = selectedIcons[selectedItem.coerceIn(
-//                                0,
-//                                selectedIcons.size - 1
-//                            )],
-//                            contentDescription = null,
-//                            modifier = Modifier.size(64.dp),
-//                            tint = MaterialTheme.colorScheme.primary
-//                        )
-//                        Spacer(modifier = Modifier.height(16.dp))
-//                        Text(
-//                            text = "${items[selectedItem.coerceIn(0, items.size - 1)]} Screen",
-//                            style = MaterialTheme.typography.headlineMedium
-//                        )
-//                        Spacer(modifier = Modifier.height(8.dp))
-//                        Text(
-//                            text = "Selected item: ${selectedItem + 1} of ${items.size}",
-//                            style = MaterialTheme.typography.bodyMedium
-//                        )
-//                    }
-//                }
-//
-//                // Navigation bar at the bottom (outside the Box)
-//
-//            }
-//        }
-
-        val config = SavedStateConfiguration {
-            serializersModule = SerializersModule {
-                polymorphic(NavKey::class) {
+    CompositionLocalProvider(LocalTheme provides LocalTheme.current){
+        QlinTheme(darkTheme = LocalTheme.current.value) {
+            val config = SavedStateConfiguration {
+                serializersModule = SerializersModule {
+                    polymorphic(NavKey::class) {
 //                    mutableStateListOf(QRoute)
-                    subclass(HomeEntry::class, HomeEntry.serializer())
+                        subclass(HomeEntry::class, HomeEntry.serializer())
+                    }
                 }
             }
-        }
 
-        val backStack = rememberNavBackStack(config, HomeEntry)
-        val navigationSuiteState = rememberNavigationSuiteScaffoldState()
+            val backStack = rememberNavBackStack(config, HomeEntry)
+            val navigationSuiteState = rememberNavigationSuiteScaffoldState()
 
-        val windowSizeClass = calculateWindowSizeClass()
-        val customLayoutType = customNavigationSuiteType(windowSizeClass)
+            val windowSizeClass = calculateWindowSizeClass()
+            val customLayoutType = customNavigationSuiteType(windowSizeClass)
 
-        LaunchedEffect(backStack.lastOrNull()) {
-            if(backStack.lastOrNull() in mainAppScreens) {
-                navigationSuiteState.show()
-            }else{
-                navigationSuiteState.hide()
+            LaunchedEffect(backStack.lastOrNull()) {
+                if(backStack.lastOrNull() in mainAppScreens) {
+                    navigationSuiteState.show()
+                }else{
+                    navigationSuiteState.hide()
+                }
             }
-        }
 
-        QNavigationSuiteScaffoldLayout(
-            navigationSuiteState = navigationSuiteState,
-            layoutType = customLayoutType,
-            backStack = backStack,
+            QNavigationSuiteScaffoldLayout(
+                navigationSuiteState = navigationSuiteState,
+                layoutType = customLayoutType,
+                backStack = backStack,
 //            onNavigationItemClick = { navItem ->
 //                navController.navigate(navItem.route) {
 //                    popUpTo(Route.HomeRoute) {
@@ -252,17 +104,20 @@ fun App() {
 //                    restoreState = true
 //                }
 //            },
-            content = {
-                Navigations(
-                    backStack = backStack,
-                    modifier = Modifier,
-                )
-            }
-        )
+                content = {
+                    Navigations(
+                        backStack = backStack,
+                        modifier = Modifier,
+                    )
+                }
+            )
+        }
     }
+
 }
 
 val mainAppScreens = listOf(
     NavItem.HOME.route,
     NavItem.INVENTORY.route,
+    NavItem.SETTINGS.route,
 )

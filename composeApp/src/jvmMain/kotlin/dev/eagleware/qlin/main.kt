@@ -8,6 +8,7 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "Qlin",
     ) {
+        window.minimumSize = java.awt.Dimension(600, 800)
         App()
     }
 }
