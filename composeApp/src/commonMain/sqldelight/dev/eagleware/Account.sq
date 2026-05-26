@@ -1,0 +1,11 @@
+CREATE TABLE Account (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    account_type INTEGER NOT NULL, -- 1: worker, 2: admin
+    status INTEGER NOT NULL,
+    phoneNumber TEXT NOT NULL,
+    email TEXT NOT NULL
+);
+
+insert:
+INSERT OR REPLACE INTO Account(account_type, status, phoneNumber, email)
+VALUES(?, ?, ?, ?);
